@@ -1,0 +1,7 @@
+name = "VKcurve"
+uuid = "3aa97455-9fe4-4946-8fa7-967d4b754676"
+authors = ["Jean Michel <jean.michel@imj-prg.fr>"]
+version = "0.1.0"
+
+[deps]
+Gapjm = "367f69f0-ca63-11e8-2372-438b29340c1b"
