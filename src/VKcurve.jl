@@ -35,7 +35,7 @@ bigfloats  to make faster  computations, but it  would make the programming
 more  difficult.  If  you  have  a  polynomial with float coefficients, you
 should convert the coefficients to `Complex{Rational{BigInt}}` (if they are
 of  any integer or rational type, or of type `Complex{<:Integer}` they will
-be converted internally to this type).
+be converted internally to `Complex{Rational{BigInt}}`).
 
 The  output  is  a  `struct`  which  contains lots of information about the
 computation,  including a  presentation of  the computed fundamental group,
@@ -253,9 +253,10 @@ end
 `fundamental_group(curve::Mvp; verbose=0)`
 
 `curve` should be an `Mvp` in `x` and `y` representing an equation `f(x,y)`
-for  a  curve  in  `ℂ²`.  The  coefficients should be rationals or gaussian
-rationals.  The result is  a record with  a certain number  of fields which
-record steps in the computation described in this introduction:
+for  a  curve  in  `ℂ²`.  The  coefficients  should be integers, rationals,
+gaussian  integers or  gaussian rationals.  The result  is a  record with a
+certain number of fields which record steps in the computation described in
+this introduction:
 
 ```julia-repl
 julia> @Mvp x,y
@@ -508,7 +509,7 @@ end
 """
 `VKcurve.simp(t::Real;prec=10^-15,type=BigInt)`
 
-simplest fraction of type `Rational{T} approximating `t` closer than prec
+simplest fraction of type `Rational{T}` approximating `t` closer than prec.
 ```julia-repl
 julia> VKcurve.simp(float(π);prec=10^-6)
 355//113
@@ -874,10 +875,11 @@ function Box(l)
 end
 
 """
-'VKcurve.loops_around_punctures(points)'
+`VKcurve.loops_around_punctures(points)`
 
-`points`  should be complex numbers. The function computes piecewise-linear
-loops representing generators of the fundamental group of `ℂ -{points}`.
+`points`  should  be  a  list  of  complex  numbers.  The function computes
+piecewise-linear  loops representing generators of the fundamental group of
+`ℂ -{points}`.
 
 ```julia-repl
 julia> VKcurve.loops_around_punctures([0])

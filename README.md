@@ -35,7 +35,7 @@ Presentation: 3 generators, 2 relators, total length 12
 2: cab=abc
 ```
 
-Here  we define the variables and then  give the curves as argument. Though approximate  calculations are used  at various places,  they are controlled and  the final result is exact; technically speaking, the computations use `Rational{BigInt}` or `Complex{Rational{BigInt}}` since the precision given by  floats  in  unsufficient.  It  might  be  possible  to use intervals of bigfloats  to make faster  computations, but it  would make the programming more  difficult.  If  you  have  a  polynomial with float coefficients, you should convert the coefficients to `Complex{Rational{BigInt}}` (if they are of  any integer or rational type, or of type `Complex{<:Integer}` they will be converted internally to this type).
+Here  we define the variables and then  give the curves as argument. Though approximate  calculations are used  at various places,  they are controlled and  the final result is exact; technically speaking, the computations use `Rational{BigInt}` or `Complex{Rational{BigInt}}` since the precision given by  floats  in  unsufficient.  It  might  be  possible  to use intervals of bigfloats  to make faster  computations, but it  would make the programming more  difficult.  If  you  have  a  polynomial with float coefficients, you should convert the coefficients to `Complex{Rational{BigInt}}` (if they are of  any integer or rational type, or of type `Complex{<:Integer}` they will be converted internally to `Complex{Rational{BigInt}}`).
 
 The  output  is  a  `struct`  which  contains lots of information about the computation,  including a  presentation of  the computed fundamental group, which is what is displayed by default when printing it.
 
@@ -64,7 +64,7 @@ This algorithm is implemented in the following way.
 From  the algorithmic point of view, memory should not be an issue, but the procedure  may  take  a  lot  of  CPU  time  (the  critical  part being the computation  of the monodromy braids  by 'follow*monodromy'). For instance, an  empirical study with  the curves `x²-yⁿ`  suggests that the needed time grows  exponentially with `n`.  The variable `VK.approx*monodromy`controls which  monodromy function  is used.  The default  value of this variable is`false`,  which means that`follow*monodromy`will be used. If the variable is  set to`true`then`approx*follow*monodromy`will  be used, where the approximations  are no longer  controlled. Therefore presentations obtained while`VK.approx*monodromy`is set  to 'true' are  not certified. However, though it is likely that there exists examples for which`approx*follow*monodromy` actually returns incorrect answers, we still have not seen one.
 
 
-<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/eba73c3fa153b595d3daf7aa1790becfaa26c681/src/VKcurve.jl#L1-L172' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/345a0731f20b7bb60137c26da2bcfd3dd983de96/src/VKcurve.jl#L1-L172' class='documenter-source'>source</a><br>
 
 <a id='Gapjm.Semisimple.fundamental_group-Tuple{Mvp}' href='#Gapjm.Semisimple.fundamental_group-Tuple{Mvp}'>#</a>
 **`Gapjm.Semisimple.fundamental_group`** &mdash; *Method*.
@@ -73,7 +73,7 @@ From  the algorithmic point of view, memory should not be an issue, but the proc
 
 `fundamental_group(curve::Mvp; verbose=0)`
 
-`curve` should be an `Mvp` in `x` and `y` representing an equation `f(x,y)` for  a  curve  in  `ℂ²`.  The  coefficients should be rationals or gaussian rationals.  The result is  a record with  a certain number  of fields which record steps in the computation described in this introduction:
+`curve` should be an `Mvp` in `x` and `y` representing an equation `f(x,y)` for  a  curve  in  `ℂ²`.  The  coefficients  should be integers, rationals, gaussian  integers or  gaussian rationals.  The result  is a  record with a certain number of fields which record steps in the computation described in this introduction:
 
 ```julia-repl
 julia> @Mvp x,y
@@ -154,7 +154,7 @@ Presentation: 2 generators, 1 relator, total length 6
 ```
 
 
-<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/eba73c3fa153b595d3daf7aa1790becfaa26c681/src/VKcurve.jl#L252-L339' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/345a0731f20b7bb60137c26da2bcfd3dd983de96/src/VKcurve.jl#L252-L340' class='documenter-source'>source</a><br>
 
 <a id='VKcurve.simp' href='#VKcurve.simp'>#</a>
 **`VKcurve.simp`** &mdash; *Function*.
@@ -163,7 +163,7 @@ Presentation: 2 generators, 1 relator, total length 6
 
 `VKcurve.simp(t::Real;prec=10^-15,type=BigInt)`
 
-simplest fraction of type `Rational{T} approximating`t` closer than prec
+simplest fraction of type `Rational{T}` approximating `t` closer than prec.
 
 ```julia-repl
 julia> VKcurve.simp(float(π);prec=10^-6)
@@ -171,7 +171,7 @@ julia> VKcurve.simp(float(π);prec=10^-6)
 ```
 
 
-<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/eba73c3fa153b595d3daf7aa1790becfaa26c681/src/VKcurve.jl#L508-L516' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/345a0731f20b7bb60137c26da2bcfd3dd983de96/src/VKcurve.jl#L509-L517' class='documenter-source'>source</a><br>
 
 <a id='VKcurve.NewtonRoot' href='#VKcurve.NewtonRoot'>#</a>
 **`VKcurve.NewtonRoot`** &mdash; *Function*.
@@ -199,7 +199,7 @@ p=y²+1 initial=-1.0 prec=1.0000000000000004e-7
 ```
 
 
-<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/eba73c3fa153b595d3daf7aa1790becfaa26c681/src/VKcurve.jl#L535-L565' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/345a0731f20b7bb60137c26da2bcfd3dd983de96/src/VKcurve.jl#L536-L566' class='documenter-source'>source</a><br>
 
 <a id='VKcurve.separate_roots' href='#VKcurve.separate_roots'>#</a>
 **`VKcurve.separate_roots`** &mdash; *Function*.
@@ -229,7 +229,7 @@ julia> VKcurve.separate_roots(q^3-1,100)
 ```
 
 
-<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/eba73c3fa153b595d3daf7aa1790becfaa26c681/src/VKcurve.jl#L629-L655' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/345a0731f20b7bb60137c26da2bcfd3dd983de96/src/VKcurve.jl#L630-L656' class='documenter-source'>source</a><br>
 
 <a id='VKcurve.find_roots' href='#VKcurve.find_roots'>#</a>
 **`VKcurve.find_roots`** &mdash; *Function*.
@@ -263,7 +263,7 @@ julia> round.(Complex{Float64}.(l.^3);sigdigits=3)
 ```
 
 
-<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/eba73c3fa153b595d3daf7aa1790becfaa26c681/src/VKcurve.jl#L682-L713' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/345a0731f20b7bb60137c26da2bcfd3dd983de96/src/VKcurve.jl#L683-L714' class='documenter-source'>source</a><br>
 
 <a id='VKcurve.nearest_pair' href='#VKcurve.nearest_pair'>#</a>
 **`VKcurve.nearest_pair`** &mdash; *Function*.
@@ -277,7 +277,7 @@ returns  a pair whose first element is the minimum distance (in the complex plan
 julia> nearest_pair([1+im,0,1]) 1=>[1,3]
 
 
-<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/eba73c3fa153b595d3daf7aa1790becfaa26c681/src/VKcurve.jl#L176-L185' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/345a0731f20b7bb60137c26da2bcfd3dd983de96/src/VKcurve.jl#L176-L185' class='documenter-source'>source</a><br>
 
 <a id='VKcurve.dist_seg' href='#VKcurve.dist_seg'>#</a>
 **`VKcurve.dist_seg`** &mdash; *Function*.
@@ -287,16 +287,16 @@ julia> nearest_pair([1+im,0,1]) 1=>[1,3]
 `dist_seg(z,a,b)` distance (in the complex plane) of `z` to segment `[a,b]` 
 
 
-<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/eba73c3fa153b595d3daf7aa1790becfaa26c681/src/VKcurve.jl#L192' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/345a0731f20b7bb60137c26da2bcfd3dd983de96/src/VKcurve.jl#L192' class='documenter-source'>source</a><br>
 
 <a id='VKcurve.loops_around_punctures' href='#VKcurve.loops_around_punctures'>#</a>
 **`VKcurve.loops_around_punctures`** &mdash; *Function*.
 
 
 
-'VKcurve.loops*around*punctures(points)'
+`VKcurve.loops_around_punctures(points)`
 
-`points`  should be complex numbers. The function computes piecewise-linear loops representing generators of the fundamental group of `ℂ -{points}`.
+`points`  should  be  a  list  of  complex  numbers.  The function computes piecewise-linear  loops representing generators of the fundamental group of `ℂ -{points}`.
 
 ```julia-repl
 julia> VKcurve.loops_around_punctures([0])
@@ -307,7 +307,7 @@ julia> VKcurve.loops_around_punctures([0])
 Guarantees on the result: for  a set `Z` of zeroes and `z∈Z`, let `R(z):=dist(z,Z-z)/2`. The input of `points`  is a set `Z` of approximate zeroes of `r.discy` such that for any `z`  one  of  the  zeroes  is  closer  than  `R(z)/S` where `S` is a global constant   of  the  program   (in  practice  we   may  take  `S=100`).  Let `d=inf_{z∈Z}(R(z))`;   we  return   points  with   denominator  `10^-k`  or `10^-k<d/S'` (in practive we take `S'=100`) and such that the distance of a segment to a zero of `r.discy` is guaranteed `>= d-d/S'-d/S`.
 
 
-<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/eba73c3fa153b595d3daf7aa1790becfaa26c681/src/VKcurve.jl#L876-L895' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/345a0731f20b7bb60137c26da2bcfd3dd983de96/src/VKcurve.jl#L877-L897' class='documenter-source'>source</a><br>
 
 <a id='VKcurve.convert_loops' href='#VKcurve.convert_loops'>#</a>
 **`VKcurve.convert_loops`** &mdash; *Function*.
@@ -325,7 +325,7 @@ The output is a named tuple with fields
   * `loops`: a list of loops. Each loops is a list  of integers representing a  piecewise  linear  loop,  obtained  by  concatenating the `segments` indexed  by the  integers, where  a negative  integer is  used when the opposed orientation of the segment is taken.
 
 
-<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/eba73c3fa153b595d3daf7aa1790becfaa26c681/src/VKcurve.jl#L826-L840' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/345a0731f20b7bb60137c26da2bcfd3dd983de96/src/VKcurve.jl#L827-L841' class='documenter-source'>source</a><br>
 
 <a id='VKcurve.follow_monodromy' href='#VKcurve.follow_monodromy'>#</a>
 **`VKcurve.follow_monodromy`** &mdash; *Function*.
@@ -366,7 +366,7 @@ The  last column has  to do with  the piecewise-linear approximation of the geom
 As  some strings are moving, it  happens that their real projections cross. When  such a crossing occurs, it  is detected and the corresponding element of  `Bₙ` is displayed (`Nontrivial braiding  =`...). The monodromy braid is the  product of these  elements of `Bₙ`,  multiplied in the  order in which they occur.
 
 
-<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/eba73c3fa153b595d3daf7aa1790becfaa26c681/src/VKcurve.jl#L1256-L1314' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/345a0731f20b7bb60137c26da2bcfd3dd983de96/src/VKcurve.jl#L1258-L1316' class='documenter-source'>source</a><br>
 
 <a id='VKcurve.approx_follow_monodromy' href='#VKcurve.approx_follow_monodromy'>#</a>
 **`VKcurve.approx_follow_monodromy`** &mdash; *Function*.
@@ -422,7 +422,7 @@ Here  at each step the following  information is displayed: first, how many iter
 The function returns an element of the ambient braid group `r.B`.
 
 
-<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/eba73c3fa153b595d3daf7aa1790becfaa26c681/src/VKcurve.jl#L1023-L1093' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/345a0731f20b7bb60137c26da2bcfd3dd983de96/src/VKcurve.jl#L1025-L1095' class='documenter-source'>source</a><br>
 
 <a id='VKcurve.Lbraid2braid' href='#VKcurve.Lbraid2braid'>#</a>
 **`VKcurve.Lbraid2braid`** &mdash; *Function*.
@@ -444,7 +444,7 @@ julia> VKcurve.Lbraid2braid([1+im,2+im,3+im],[2+im,1+2im,4-6im],B)
 The lists `v1` and `v2` must have the same length, say `n`. Then `B` should be  `BraidMonoid(coxsym(n))`, the braid group  on `n` strings. The elements of  `v1` (resp. `v2`)  should be `n`  distinct complex rational numbers. We use the Brieskorn basepoint, namely the contractible set `C+iV_ℝ` where `C` is  a real chamber; therefore the endpoints  need not be equal. The strings defined  by `v1` and `v2` should be  non-crossing. When the numbers in `v1` (resp.  `v2`)  have  distinct  real  parts,  the  real picture of the braid defines a unique element of `B`. When some real parts are equal, we apply a lexicographical  desingularization, corresponding to a rotation of `v1` and `v2` by an arbitrary small positive angle.
 
 
-<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/eba73c3fa153b595d3daf7aa1790becfaa26c681/src/VKcurve.jl#L1417-L1440' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/345a0731f20b7bb60137c26da2bcfd3dd983de96/src/VKcurve.jl#L1419-L1442' class='documenter-source'>source</a><br>
 
 <a id='VKcurve.VKquotient' href='#VKcurve.VKquotient'>#</a>
 **`VKcurve.VKquotient`** &mdash; *Function*.
@@ -482,5 +482,5 @@ julia> display_balanced(p)
 ```
 
 
-<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/eba73c3fa153b595d3daf7aa1790becfaa26c681/src/VKcurve.jl#L1498-L1531' class='documenter-source'>source</a><br>
+<a target='_blank' href='https://github.com/jmichel7/VKcurve.jl/blob/345a0731f20b7bb60137c26da2bcfd3dd983de96/src/VKcurve.jl#L1500-L1533' class='documenter-source'>source</a><br>
 
