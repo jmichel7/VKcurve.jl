@@ -12,7 +12,7 @@ Compositio Math., 27:141--158, 1973.
 for  a clear and modernized account of this method). Here is an example for
 curves given by the zeroes of two-variable polynomials in `x` and `y`.
 
-```julia-repl
+```julia-rep1
 julia> using Gapjm, VKcurve
 
 julia> @Mvp x,y
@@ -268,17 +268,17 @@ julia> propertynames(r)
 (:curve, :ismonic, :prop, :rawPresentation, :B, :basepoint, :dispersal, :monodromy, :discyFactored, :segments, :braids, :roots, :nonVerticalPart, :discy, :zeros, :curveVerticalPart, :points, :loops, :presentation)
 
 julia> r.curve # the given equation
-Mvp{Int64}: x²-y³
+Mvp{Rational{BigInt}}: (1//1)x²+(-1//1)y³
 
-julia> r.discy # its discriminant wrt x
-Pol{Rational{Int64}}: (1//1)y
+julia> Pol(:y);r.discy # its discriminant wrt x
+Pol{Rational{BigInt}}: (1//1)y
 
 julia> r.roots  # roots of the discriminant
-1-element Vector{Rational{Int64}}:
+1-element Vector{Rational{BigInt}}:
  0//1
 
 julia> r.points # for points, segments and loops see loops_around_punctures
-4-element Vector{Complex{Rational{Int64}}}:
+4-element Vector{Complex{Rational{BigInt}}}:
   0//1 - 1//1*im
  -1//1 + 0//1*im
   1//1 + 0//1*im
@@ -297,10 +297,10 @@ julia> r.loops
 
 julia> r.zeros # zeroes of curve(y=pt) when pt runs over r.points
 4-element Vector{Vector{Complex{Rational{BigInt}}}}:
- [2378//3363 + 2378//3363*im, -2378//3363 - 2378//3363*im]
+ [5741//8119 + 5741//8119*im, -5741//8119 - 5741//8119*im]
  [0//1 + 1//1*im, 0//1 - 1//1*im]
  [1//1 + 0//1*im, -1//1 + 0//1*im]
- [-2378//3363 + 2378//3363*im, 2378//3363 - 2378//3363*im]
+ [-5741//8119 + 5741//8119*im, 5741//8119 - 5741//8119*im]
 
 julia> r.monodromy # monodromy around each r.segment
 4-element Vector{GarsideElt{Perm{Int16}, BraidMonoid{Perm{Int16}, CoxSym{Int16}}}}:
@@ -312,7 +312,8 @@ julia> r.monodromy # monodromy around each r.segment
 julia> r.braids # monodromy around each r.loop
 1-element Vector{GarsideElt{Perm{Int16}, BraidMonoid{Perm{Int16}, CoxSym{Int16}}}}:
  Δ³
-
+```
+```julia-rep1
 julia> display_balanced(r.presentation) # printing of r by default
 1: bab=aba
 ```
@@ -322,7 +323,7 @@ computation seems to take a long time without doing anything. `verbose` set
 at  0 is the default and prints nothing; set at 1 it shows which segment is
 currently  active,  and  set  at  2  it  traces the computation inside each
 segment.
-```julia-repl
+```julia-rep1
 julia> fundamental_group(x^2-y^3,verbose=1);
 # There are 4 segments in 1 loops
 # follow_monodromy along segment 1/4  in   8 steps/  0.012sec got B(-1)
@@ -336,7 +337,7 @@ julia> fundamental_group(x^2-y^3,verbose=1);
 Presentation: 2 generators, 1 relator, total length 6
 ```
 """
-function fundamental_group(curve::Mvp;verbose=0,abort=0)
+function Gapjm.fundamental_group(curve::Mvp;verbose=0,abort=0)
   r=VKrec(Dict{Symbol,Any}())
   VK.showSingularProj=VK.showBraiding=VK.showLoops=VK.showAction=
   VK.showInsideSegments=VK.showWorst=VK.showZeros=verbose>=2
@@ -550,14 +551,16 @@ J.  Hubbard, D. Schleicher,  and S. Sutherland.  "How to find  all roots of
 complex polynomials by Newton's method.", Invent. Math. 146:1--33, 2001.
 ```julia-repl
 julia> p=Pol([1,0,1])
-Pol{Int64}: x²+1
+Pol{Int64}: y²+1
 
 julia> VKcurve.NewtonRoot(p,1+im,10^-7)
 (0//1 + 1//1*im, 3.3333333333333337e-10)
+```
 
+```julia-rep1
 julia> VKcurve.NewtonRoot(p,1,10^-7;show=true)
 ****** Non-Convergent Newton after 800 iterations ******
-p=x²+1 initial=-1.0 prec=1.0000000000000004e-7
+p=y²+1 initial=-1.0 prec=1.0000000000000004e-7
 ```
 """
 function NewtonRoot(p::Pol,z,precision;showall=false,show=false,lim=800)
@@ -598,13 +601,15 @@ necessarily the case if `p` has multiple roots), `nothing` is returned.
 
 ```julia-repl
 julia> p=Pol([1,0,1])
-Pol{Int64}: x²+1
+Pol{Int64}: y²+1
 
 julia> VKcurve.separate_roots_initial_guess(p,[1+im,1-im],10^5)
 2-element Vector{Complex{Rational{BigInt}}}:
  0//1 + 1//1*im
  0//1 - 1//1*im
+```
 
+```julia-rep1
 julia> VKcurve.separate_roots_initial_guess(p,[1+im,2+im],1000)
 1 + 1im and 2 + 1im lie in the same attraction basin
 ```
@@ -685,7 +690,7 @@ handles  quite  well  polynomials  with  multiple  roots.  We  rely  on the
 algorithms explained in detail in cite{HSS01}.
 
 ```julia-repl
-julia> VKcurve.find_roots((Pol()-1)^5,1/5000)
+julia> VKcurve.find_roots((Pol()-1)^5,1/1000)
 5-element Vector{Complex{Rational{BigInt}}}:
  1//1 + 0//1*im
  1//1 + 0//1*im
@@ -693,13 +698,13 @@ julia> VKcurve.find_roots((Pol()-1)^5,1/5000)
  1//1 + 0//1*im
  1//1 + 0//1*im
 
-julia> VKcurve.find_roots(Pol()^3-1,10^-5)
+julia> l=VKcurve.find_roots(Pol()^3-1,10^-5)
 3-element Vector{Complex{Rational{BigInt}}}:
  -1//2 - 16296//18817*im
   1//1 + 0//1*im
  -1//2 + 16296//18817*im
 
-julia> round.(Complex{Float64}.(ans.^3);sigdigits=3)
+julia> round.(Complex{Float64}.(l.^3);sigdigits=3)
 3-element Vector{ComplexF64}:
  1.0 - 1.83e-9im
  1.0 + 0.0im
@@ -1437,6 +1442,8 @@ function Lbraid2braid(v1, v2, B)
 # two printing control fields: VK.showSingularProj, VK.showBraiding
 # 1) singular real projections are identified
 # 2) calls starbraid for each
+  v1*=1//1
+  v2*=1//1
   n=length(v1)
   x1,y1=reim(v1)
   x2,y2=reim(v2)
@@ -1505,7 +1512,9 @@ FreeGroup(a,b,c)/[b⁻¹a⁻¹baba⁻¹,b⁻¹a⁻¹b⁻¹aba,.,.,cb⁻¹,c⁻¹
 
 julia> p=Presentation(g)
 Presentation: 3 generators, 4 relators, total length 16
+```
 
+```julia-rep1
 julia> display_balanced(p)
 1: c=b
 2: b=c
