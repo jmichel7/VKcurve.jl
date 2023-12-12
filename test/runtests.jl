@@ -1,5 +1,5 @@
 # auto-generated tests from julia-repl docstrings
-using Test, Gapjm, VKcurve
+using Test, Chevie, VKcurve
 function mytest(file::String,cmd::String,man::String)
   println(file," ",cmd)
   exec=repr(MIME("text/plain"),eval(Meta.parse(cmd)),context=:limit=>true)

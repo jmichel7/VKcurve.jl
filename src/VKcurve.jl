@@ -13,7 +13,7 @@ for  a clear and modernized account of this method). Here is an example for
 curves given by the zeroes of two-variable polynomials in `x` and `y`.
 
 ```julia-rep1
-julia> using Gapjm, VKcurve
+julia> using Chevie, VKcurve
 
 julia> @Mvp x,y
 
@@ -149,7 +149,7 @@ This algorithm is implemented in the following way.
     memory.  We have been  able to solve  such problems when  they occur by
     calling  at  this  stage  our  function  'shrink'  which  finds smaller
     generators  for the  subgroup of  `Bₙ` generated  by the  `bᵢ` (see the
-    description  in `Gapjm.Garside`). This function is called
+    description  in `Chevie.Garside`). This function is called
     if 'VK.shrinkBraid==true'.
 
   - Finally, the presentation is simplified by 'simplify'. This function is
@@ -171,7 +171,7 @@ though it is likely that there exists examples for which
 not seen one.
 """
 module VKcurve
-using Gapjm
+using Chevie
 export VK
 """
 `VKcurve.nearest_pair(v::Vector{<:Complex})`
@@ -338,7 +338,7 @@ julia> fundamental_group(x^2-y^3,verbose=1);
 Presentation: 2 generators, 1 relator, total length 6
 ```
 """
-function Gapjm.fundamental_group(curve::Mvp;verbose=0,abort=0)
+function Chevie.fundamental_group(curve::Mvp;verbose=0,abort=0)
   r=VKrec(Dict{Symbol,Any}())
   VK.showSingularProj=VK.showBraiding=VK.showLoops=VK.showAction=
   VK.showInsideSegments=VK.showWorst=VK.showZeros=verbose>=2
@@ -1472,8 +1472,8 @@ function Lbraid2braid(v1, v2, B)
     ut=(u+t)/2
     xut=map(k->x1[k]+ut*(x2[k]-x1[k]),1:n)
     put=inv(sortPerm(xut))
-    xt=permute(xt,put)
-    yt=permute(yt,put)
+    xt=invpermute(xt,put)
+    yt=invpermute(yt,put)
     xcrit=unique(sort(xt))
     for x in xcrit
       posx=findfirst(==(x),xt)
@@ -1570,7 +1570,7 @@ function DBVKquotient(r)
   F/rels
 end
 
-Gapjm.gap(x::Complex{<:AbstractFloat})="Complex(evalf(\"$(real(x))\"),evalf(\"$(imag(x))\"))"
+Chevie.gap(x::Complex{<:AbstractFloat})="Complex(evalf(\"$(real(x))\"),evalf(\"$(imag(x))\"))"
 
 data=Dict()
 
