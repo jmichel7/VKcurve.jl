@@ -1,16 +1,16 @@
 """
-This is a port to Julia of the GAP3 package VKcurve written by David Bessis
-and Jean Michel in 2002.
+This  package is  a port  to Julia  of the  GAP3 package VKcurve written by
+David Bessis and Jean Michel in 2002.
 
 The  main function  computes the  fundamental group  of the complement of a
 complex  algebraic curve in `ℂ²`, using an implementation of the Van Kampen
-method (see for example
+method; see for example
 
 D. Cheniot. "Une démonstration du théorème de   Zariski sur les sections hyperplanes d'une hypersurface projective et du   théorème de Van Kampen sur le groupe fondamental du   complémentaire d'une courbe projective plane."
 Compositio Math., 27:141--158, 1973.
 
-for  a clear and modernized account of this method). Here is an example for
-curves given by the zeroes of two-variable polynomials in `x` and `y`.
+for a clear and modernized account of this method. Here is are examples for
+curves defined as the zeros of two-variable polynomials in `x` and `y`.
 
 ```julia-rep1
 julia> using Chevie, VKcurve
@@ -26,24 +26,24 @@ Presentation: 3 generators, 2 relators, total length 12
 1: abc=bca
 2: cab=abc
 ```
-Here  we define the variables and then  give the curves as argument. Though
-approximate  calculations are used  at various places,  they are controlled
-and  the final result is exact; technically speaking, the computations use
+Here we define the variables and then give the curves as argument. Although
+approximate  computations are used  in several places,  they are controlled
+and  the final result is exact;  technically speaking, the computations use
 `Rational{BigInt}` or `Complex{Rational{BigInt}}` since the precision given
-by  floats  in  unsufficient.  It  might  be  possible  to use intervals of
-bigfloats  to make faster  computations, but it  would make the programming
+by  floats  is  insufficient.  It  might  be  possible  to use intervals of
+bigfloats  to make calculations faster, but this would make the programming
 more  difficult.  If  you  have  a  polynomial with float coefficients, you
 should convert the coefficients to `Complex{Rational{BigInt}}` (if they are
 of  any integer or rational type, or of type `Complex{<:Integer}` they will
 be converted internally to `Complex{Rational{BigInt}}`).
 
-The  output  is  a  `struct`  which  contains lots of information about the
-computation,  including a  presentation of  the computed fundamental group,
+The  output is  a `struct`  which contains  a lot  of information about the
+calculation,  including a  presentation of  the computed fundamental group,
 which is what is displayed by default when printing it.
 
 Our  motivation  for  writing  this  package  in  2002 was to find explicit
-presentations  for  generalized  braid  groups  attached to certain complex
-reflection  groups. Though presentations  were known for  almost all cases,
+presentations  for generalized braid groups associated with certain complex
+reflection  groups. Although presentations were known for almost all cases,
 six  exceptional cases were missing (in the notations of Shephard and Todd,
 these  cases are  `G₂₄`, `G₂₇`,  `G₂₉`, `G₃₁`,  `G₃₃` and `G₃₄`). Since the
 existence of nice presentations for braid groups was proved
@@ -54,19 +54,20 @@ Invent. Math. 145:487--507, 2001
 
 it  was upsetting not to  know them explicitly. In  the absence of any good
 grip  on the  geometry of  these six  examples, brute force (using VKcurve)
-gave  us we  have obtained  presentations for  all of  them (they have been
-confirmed  by less computational methods  since). These computations can be
+gave  us we have  obtained presentations for  all of them  (they have since
+been  confirmed by less  computational methods). These  computations can be
 reproduced by `fundamental_group(VKcurve.data[i])` where
 `i∈{23,24,27,29,31,33,34}`.
 
 If  you  are  not  interested  in  the  details  of  the  algorithm, and if
-'fundamental_group' as in the above examples gives you satisfactory answers
-in a reasonable time, then you do not need to read this manual any further.
+'fundamental_group',  as  in  the  examples  above,  gives you satisfactory
+answers  in a reasonable time, then you do not need to read this manual any
+further.
 
-To  implement the algorithms, we needed  to write auxiliary facilities, for
-instance  find  `Complex{Rational}`  approximations  of  zeros  of  complex
-polynomials,  or work  with piecewise  linear braids,  which may  be useful
-facilities  on their own. These are documented in this manual.
+In  order to implement the algorithm, we had to write auxiliary facilities,
+for  example to find `Complex{Rational}` approximations of zeros of complex
+polynomials,  or to work with piecewise  linear braids, which can be useful
+facilities in themselves. These are documented in this manual.
 
 Before  discussing  our  actual  implementation,  let  us  give an informal
 summary  of the mathematical  background. Our strategy  is adapted from the
@@ -156,19 +157,18 @@ This algorithm is implemented in the following way.
     a   heuristic   function   for   simplifying   presentations.   It   is
     non-deterministic.
 
-From  the algorithmic point of view, memory should not be an issue, but the
-procedure  may  take  a  lot  of  CPU  time  (the  critical  part being the
-computation  of the monodromy braids  by 'follow_monodromy'). For instance,
-an  empirical study with  the curves `x²-yⁿ`  suggests that the needed time
+From  an algorithmic point of view, memory  should not be an issue, but the
+procedure  can  take  a  lot  of  CPU  time  (the  critical  part being the
+computation of the monodromy braids by 'follow_monodromy'). For example, an
+empirical  study with  the curves  `x²-yⁿ` suggests  that the time required
 grows  exponentially with `n`.  The variable `VK.approx_monodromy` controls
 which  monodromy function  is used.  The default  value of this variable is
-`false`,  which means that `follow_monodromy` will be used. If the variable
-is  set to  `true` then  `approx_follow_monodromy` will  be used, where the
-approximations  are no longer  controlled. Therefore presentations obtained
-while  `VK.approx_monodromy` is set  to 'true' are  not certified. However,
-though it is likely that there exists examples for which
-`approx_follow_monodromy` actually returns incorrect answers, we still have
-not seen one.
+`false`,  which means that  `follow_monodromy` is used.  If the variable is
+set  to `true` then `approx_follow_monodromy`  s used, where approximations
+are   no   longer   controlled.   Therefore  presentations  obtained  while
+`VK.approx_monodromy`  is  set  to  'true'  will not be certified. However,
+while  it is likely that there are examples where `approx_follow_monodromy`
+actually returns incorrect answers, we have not yet seen any.
 """
 module VKcurve
 using Chevie
