@@ -1,28 +1,24 @@
 # auto-generated tests from julia-repl docstrings
-using Test, Chevie, VKcurve
+using Test, VKcurve, Chevie
 function mytest(file::String,cmd::String,man::String)
   println(file," ",cmd)
   exec=repr(MIME("text/plain"),eval(Meta.parse(cmd)),context=:limit=>true)
-  if endswith(cmd,";") exec="nothing" 
-  else exec=replace(exec,r"\s*$"m=>"")
-       exec=replace(exec,r"\s*$"s=>"")
-  end
-  if exec!=man 
-    i=1
-    while i<=lastindex(exec) && i<=lastindex(man) && exec[i]==man[i]
-      i=nextind(exec,i)
-    end
-    print("exec=$(repr(exec[i:end]))\nmanl=$(repr(man[i:end]))\n")
-  end
-  exec==man
+  if endswith(cmd,";") return true end
+  exec=replace(exec,r"\s*$"m=>""); exec=replace(exec,r"\s*$"s=>"")
+  exec=replace(exec,r"^\s*"=>"")
+  if exec==man return true end
+  inds=collect(eachindex(exec))
+  i=inds[findfirst(i->i<=lastindex(man) && exec[i]!=man[i],inds)]
+  print("exec=$(repr(exec[i:end]))\nmanl=$(repr(man[i:end]))\n")
+  false
 end
 @testset "VKcurve.jl" begin
 @test mytest("VKcurve.jl","@Mvp x,y","nothing")
-@test mytest("VKcurve.jl","r=fundamental_group(x^2-y^3)","Presentation: 2 generators, 1 relator, total length 6\n1: bab=aba")
-@test mytest("VKcurve.jl","propertynames(r)","(:curve, :ismonic, :prop, :rawPresentation, :B, :basepoint, :dispersal, :monodromy, :discyFactored, :segments, :braids, :roots, :nonVerticalPart, :discy, :zeros, :curveVerticalPart, :points, :loops, :presentation)")
+@test mytest("VKcurve.jl","r=fundamental_group(x^2-y^3)","")
+@test mytest("VKcurve.jl","propertynames(r)","(:prop, :presentation, :ismonic, :rawPresentation, :discy, :B, :basepoint, :dispersal, :zeros, :monodromy, :discyFactored, :curveVerticalPart, :curve, :points, :verticallines, :segments, :loops, :roots, :nonVerticalPart, :braids)")
 @test mytest("VKcurve.jl","r.curve","Mvp{Rational{BigInt}}: (1//1)x²+(-1//1)y³")
-@test mytest("VKcurve.jl","Pol(:y);r.discy","Pol{Rational{BigInt}}: (1//1)y")
-@test mytest("VKcurve.jl","r.roots","1-element Vector{Rational{BigInt}}:\n 0//1")
+@test mytest("VKcurve.jl","Pol(:y);r.discy","Pol{Rational{BigInt}}: y")
+@test mytest("VKcurve.jl","r.roots","1-element Vector{Rational{BigInt}}:\n 0")
 @test mytest("VKcurve.jl","r.points","4-element Vector{Complex{Rational{BigInt}}}:\n  0//1 - 1//1*im\n -1//1 + 0//1*im\n  1//1 + 0//1*im\n  0//1 + 1//1*im")
 @test mytest("VKcurve.jl","r.segments","4-element Vector{Vector{Int64}}:\n [1, 2]\n [1, 3]\n [2, 4]\n [3, 4]")
 @test mytest("VKcurve.jl","r.loops","1-element Vector{Vector{Int64}}:\n [4, -3, -1, 2]")

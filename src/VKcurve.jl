@@ -12,19 +12,25 @@ Compositio Math., 27:141--158, 1973.
 for a clear and modernized account of this method. Here is are examples for
 curves defined as the zeros of two-variable polynomials in `x` and `y`.
 
-```julia-rep1
-julia> using Chevie, VKcurve
+```julia-repl
+julia> using PuiseuxPolynomials, VKcurve
 
 julia> @Mvp x,y
+```
 
-julia> fundamental_group(x^2-y^3)
-Presentation: 2 generators, 1 relator, total length 6
-1: bab=aba
-
+```julia-rep1
 julia> fundamental_group((x+y)*(x-y*im)*(x+2*y))
 Presentation: 3 generators, 2 relators, total length 12
 1: abc=bca
 2: cab=abc
+```
+
+```julia-repl
+julia> r=fundamental_group(x^2-y^3); # the braid group on 3 strands
+Presentation: 2 generators, 1 relator, total length 6
+
+julia> r
+1: bab=aba
 ```
 Here we define the variables and then give the curves as argument. Although
 approximate  computations are used  in several places,  they are controlled
@@ -56,11 +62,11 @@ it  was upsetting not to  know them explicitly. In  the absence of any good
 grip  on the  geometry of  these six  examples, brute force (using VKcurve)
 gave  us we have  obtained presentations for  all of them  (they have since
 been  confirmed by less  computational methods). These  computations can be
-reproduced by `fundamental_group(VKcurve.data[i])` where
+reproduced by [`fundamental_group`](@ref)`(VKcurve.data[i])` where
 `i∈{23,24,27,29,31,33,34}`.
 
 If  you  are  not  interested  in  the  details  of  the  algorithm, and if
-'fundamental_group',  as  in  the  examples  above,  gives you satisfactory
+`fundamental_group`,  as  in  the  examples  above,  gives you satisfactory
 answers  in a reasonable time, then you do not need to read this manual any
 further.
 
@@ -102,8 +108,8 @@ space).  Let `φ` be the Hurwitz action of  `Bₙ` on `Fₙ`. All choices can be
 made in such a way that `φᵢ=φ(bᵢ)`. The theorem of Van Kampen asserts that,
 if  there are  no bad  roots of  the discriminant,  a presentation  for the
 fundamental group of `ℂ²-C` is `⟨f₁,…,fₙ∣∀i,j,φᵢ(fⱼ)=fⱼ⟩`. A variant of the
-above presentation (see 'VKquotient') can be used to deal with bad roots of
-the discriminant.
+above  presentation (see [`VKquotient`](@ref)) can be used to deal with bad
+roots of the discriminant.
 
 This algorithm is implemented in the following way.
 
@@ -115,10 +121,10 @@ This algorithm is implemented in the following way.
   - The  roots  of  `Δ`  are  approximated,  via  the  following procedure.
     First,  we reduce `Δ` and get  `Δ_{red}` (generating the radical of the
     ideal  generated  by  `Δ`).  The  roots  `{y₁,…,y_d}`  of `Δ_{red}` are
-    separated   by  'separate_roots'   (which  uses   Newton's  method  and
+    separated  by [`separate_roots`](@ref) (which  uses Newton's method and
     continuous fraction aprroximations).
 
-  - Loops around  these roots  are computed  by 'loops_around_punctures'.
+  - Loops around these roots are computed by [`loops_around_punctures`](@ref).
     This  function first computes  some sort of  honeycomb, consisting of a
     set  `S` of  affine segments,  isolating the  `yᵢ`. Since  it makes the
     computation  of the monodromy  more effective, each  inner segment is a
@@ -130,48 +136,49 @@ This algorithm is implemented in the following way.
   - For each  segment in  `S`, we  compute the  monodromy braid obtained by
     following  the solutions in `x` of  `P(x,y)=0` when `y` moves along the
     segment. By default, this monodromy braid is computed by
-    `follow_monodromy`. The strategy is to compute a piecewise-linear braid
-    approximating  the actual monodromy geometric braid. The approximations
-    are controlled. The piecewise-linear braid is constructed step-by-step,
-    by  computations of linear pieces. As soon as new piece is constructed,
-    it  is converted  into an  element of  `Bₙ` and  multiplied; therefore,
-    though  the braid may consist of a  huge number of pieces, the function
-    `follow_monodromy`   works  with  constant  memory.  The  package  also
-    contains  a variant  `approx_follow_monodromy`, which  runs faster, but
-    without guarantee on the result (see below).
+    [`follow_monodromy`](@ref). The strategy is to compute a
+    piecewise-linear  braid  approximating  the  actual monodromy geometric
+    braid. The approximations are controlled. The piecewise-linear braid is
+    constructed  step-by-step, by computations of linear pieces. As soon as
+    new  piece is constructed, it is converted  into an element of `Bₙ` and
+    multiplied; therefore, though the braid may consist of a huge number of
+    pieces, the function `follow_monodromy` works with constant memory. The
+    package  also  contains  a  variant  [`approx_follow_monodromy`](@ref),
+    which runs faster, but without guarantee on the result (see below).
 
   - The monodromy braids `bᵢ` corresponding  to the loops `γᵢ` are obtained
     by  multiplying the monodromy braids  of the correponding segments. The
     action  of these elements of `Bₙ` on the free group `Fₙ` is computed by
-    'hurwitz'  and the resulting  presentation of the  fundamental group is
-    computed  by 'VKquotient'. It happens for  some large problems that the
-    whole process fails here, because the braids `bᵢ` obtained are too long
-    and  the  computation  of  the  action  on  `Fₙ` requires thus too much
-    memory.  We have been  able to solve  such problems when  they occur by
-    calling  at  this  stage  our  function  'shrink'  which  finds smaller
+    `hurwitz`  and the resulting  presentation of the  fundamental group is
+    computed  by [`VKquotient`](@ref).  It happens  for some large problems
+    that the whole process fails here, because the braids `bᵢ` obtained are
+    too  long and the computation  of the action on  `Fₙ` requires thus too
+    much  memory. We have been able to  solve such problems when they occur
+    by  calling at  this stage  our function  `shrink` which  finds smaller
     generators  for the  subgroup of  `Bₙ` generated  by the  `bᵢ` (see the
-    description  in `Chevie.Garside`). This function is called
-    if 'VK.shrinkBraid==true'.
+    description   in   `Chevie.Garside`).   This   function  is  called  if
+    `VK.shrinkBraid==true`.
 
-  - Finally, the presentation is simplified by 'simplify'. This function is
+  - Finally, the presentation is simplified by `simplify`. This function is
     a   heuristic   function   for   simplifying   presentations.   It   is
     non-deterministic.
 
 From  an algorithmic point of view, memory  should not be an issue, but the
 procedure  can  take  a  lot  of  CPU  time  (the  critical  part being the
-computation of the monodromy braids by 'follow_monodromy'). For example, an
+computation of the monodromy braids by `follow_monodromy`). For example, an
 empirical  study with  the curves  `x²-yⁿ` suggests  that the time required
 grows  exponentially with `n`.  The variable `VK.approx_monodromy` controls
 which  monodromy function  is used.  The default  value of this variable is
 `false`,  which means that  `follow_monodromy` is used.  If the variable is
-set  to `true` then `approx_follow_monodromy`  s used, where approximations
+set  to `true` then `approx_follow_monodromy` is used, where approximations
 are   no   longer   controlled.   Therefore  presentations  obtained  while
-`VK.approx_monodromy`  is  set  to  'true'  will not be certified. However,
+`VK.approx_monodromy`  is  set  to  `true`  will not be certified. However,
 while  it is likely that there are examples where `approx_follow_monodromy`
 actually returns incorrect answers, we have not yet seen any.
 """
 module VKcurve
-using Chevie
+using Chevie, Reexport
+@reexport using Chevie: fundamental_group
 export VK
 """
 `VKcurve.nearest_pair(v::Vector{<:Complex})`
@@ -272,11 +279,11 @@ julia> r.curve # the given equation
 Mvp{Rational{BigInt}}: (1//1)x²+(-1//1)y³
 
 julia> Pol(:y);r.discy # its discriminant wrt x
-Pol{Rational{BigInt}}: (1//1)y
+Pol{Rational{BigInt}}: y
 
 julia> r.roots  # roots of the discriminant
 1-element Vector{Rational{BigInt}}:
- 0//1
+ 0
 
 julia> r.points # for points, segments and loops see loops_around_punctures
 4-element Vector{Complex{Rational{BigInt}}}:
@@ -588,7 +595,7 @@ function NewtonRoot(p::Pol,z,precision;showall=false,show=false,lim=800)
 end
 
 """
-'VKcurve.separate_roots_initial_guess(p::Pol, v, safety)'
+`VKcurve.separate_roots_initial_guess(p::Pol, v, safety)`
 
 Here  `p` is a complex  polynomial, and `v` is  a list of approximations to
 roots  of `p` which should lie in different attraction basins for Newton' s
@@ -684,7 +691,7 @@ end
 `VKcurve.find_roots(p::Pol, approx)`
 
 `p`  should have rational or  `Complex{Rational} coefficients. The function
-returns  'Complex' rational  approximations to  the roots  of `p` which are
+returns  `Complex` rational  approximations to  the roots  of `p` which are
 better  than  `approx`  (a  positive  rational).  Contrary to the functions
 `separate_roots`,  etc... described in the  previous chapter, this function
 handles  quite  well  polynomials  with  multiple  roots.  We  rely  on the
@@ -833,7 +840,7 @@ the vertices of the loop.
 The output is a named tuple with fields
   - `points`: a list of complex  numbers.
   - `segments`:  a list of oriented segments, each of them  encoded by the
-    list of the positions in 'points' of  its two endpoints.
+    list of the positions in `points` of  its two endpoints.
   - `loops`: a list of loops. Each loops is a list  of integers representing
     a  piecewise  linear  loop,  obtained  by  concatenating the `segments`
     indexed  by the  integers, where  a negative  integer is  used when the

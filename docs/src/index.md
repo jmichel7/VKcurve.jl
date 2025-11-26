@@ -1,7 +1,9 @@
-# VKcurve
-```@contents
-Depth=3
+```@meta
+CurrentModule = VKcurve
 ```
+# VKcurve
+
+Documentation for [VKcurve](https://github.com/jmichel7/VKcurve.jl).
 
 ```@docs
 VKcurve
