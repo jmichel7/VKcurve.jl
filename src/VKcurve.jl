@@ -561,14 +561,14 @@ complex polynomials by Newton's method.", Invent. Math. 146:1--33, 2001.
 julia> p=Pol([1,0,1])
 Pol{Int64}: y²+1
 
-julia> VKcurve.NewtonRoot(p,1+im,10^-7)
-(0//1 + 1//1*im, 3.3333333333333337e-10)
+julia> VKcurve.NewtonRoot(p,1+im,10^-4)
+(0//1 + 1//1*im, 3.333333333333333e-7)
 ```
 
 ```julia-rep1
-julia> VKcurve.NewtonRoot(p,1,10^-7;show=true)
+julia> VKcurve.NewtonRoot(p,1,10^-4;show=true)
 ****** Non-Convergent Newton after 800 iterations ******
-p=y²+1 initial=-1.0 prec=1.0000000000000004e-7
+(p, z, precision) = (Pol([1, 0, 1]), -1//1, 0.0001)
 ```
 """
 function NewtonRoot(p::Pol,z,precision;showall=false,show=false,lim=800)

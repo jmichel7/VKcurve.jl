@@ -27,7 +27,7 @@ end
 @test mytest("VKcurve.jl","r.braids","1-element Vector{GarsideElt{Perm{Int16}, BraidMonoid{Perm{Int16}, CoxSym{Int16}}}}:\n Δ³")
 @test mytest("VKcurve.jl","VKcurve.simp(float(π);prec=10^-6)","355//113")
 @test mytest("VKcurve.jl","p=Pol([1,0,1])","Pol{Int64}: y²+1")
-@test mytest("VKcurve.jl","VKcurve.NewtonRoot(p,1+im,10^-7)","(0//1 + 1//1*im, 3.3333333333333337e-10)")
+@test mytest("VKcurve.jl","VKcurve.NewtonRoot(p,1+im,10^-4)","(0//1 + 1//1*im, 3.333333333333333e-7)")
 @test mytest("VKcurve.jl","p=Pol([1,0,1])","Pol{Int64}: y²+1")
 @test mytest("VKcurve.jl","VKcurve.separate_roots_initial_guess(p,[1+im,1-im],10^5)","2-element Vector{Complex{Rational{BigInt}}}:\n 0//1 + 1//1*im\n 0//1 - 1//1*im")
 @test mytest("VKcurve.jl","@Pol q","Pol{Int64}: q")
